@@ -3,6 +3,7 @@ use capstone::arch::x86::X86Insn;
 use capstone::prelude::{BuildsCapstone, BuildsCapstoneSyntax};
 use thiserror::Error;
 
+use crate::adc_instruction::AdcInstruction;
 use crate::add_instruction::AddInstruction;
 use crate::condition_code_flag::JumpConditionCode;
 use crate::jcc_instruction::{JCCInstruction};
@@ -103,6 +104,7 @@ pub mod push_instruction;
 pub mod mov_instruction;
 pub mod shl_instruction;
 pub mod add_instruction;
+pub mod adc_instruction;
 pub mod sub_instruction;
 pub mod setb_instruction;
 pub mod test_instruction;
@@ -116,6 +118,7 @@ pub enum X86Instruction {
     Mov(MovInstruction),
     Shl(ShlInstruction),
     Add(AddInstruction),
+    Adc(AdcInstruction),
     Sub(SubInstruction),
     SetB(SetBInstruction),
     Test(TestInstruction),
@@ -152,6 +155,9 @@ pub fn disassemble(bytes: &[u8], address: u64) -> Result<Vec<X86Instruction>, Di
             }
             X86Insn::X86_INS_ADD => {
                 X86Instruction::Add(AddInstruction::from_details(x86_detail))
+            }
+            X86Insn::X86_INS_ADC => {
+                X86Instruction::Adc(AdcInstruction::from_details(x86_detail))
             }
             X86Insn::X86_INS_SETB => {
                 X86Instruction::SetB(SetBInstruction::from_details(x86_detail))
